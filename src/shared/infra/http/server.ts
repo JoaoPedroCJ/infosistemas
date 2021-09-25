@@ -6,9 +6,13 @@ import 'express-async-errors';
 
 import cors from 'cors';
 import { errors } from 'celebrate';
+import morgan from 'morgan';
 
 import ErrorHandler from '@shared/errors/ErrorHandler';
 import rateLimiter from './middlewares/rateLimiter';
+
+import '@shared/infra/typeorm';
+import '@shared/container';
 
 import routes from './routes';
 
@@ -23,6 +27,7 @@ const server = express();
 server.use(cors());
 server.use(express.json());
 server.use(rateLimiter);
+server.use(morgan('dev'));
 
 server.use(routes);
 
