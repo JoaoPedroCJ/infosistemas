@@ -1,10 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
-import redis, { ClientOpts } from 'redis';
+import * as redis from 'redis';
 import { RateLimiterRedis } from 'rate-limiter-flexible';
 import AppError from '@shared/errors/AppError';
 import RedisConfig from '@config/cache';
 
-const redisClient = redis.createClient(RedisConfig.config.redis as ClientOpts);
+const redisClient = redis.createClient(
+  RedisConfig.config.redis as redis.ClientOpts,
+);
 
 const limiter = new RateLimiterRedis({
   storeClient: redisClient,
