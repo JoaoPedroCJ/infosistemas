@@ -14,6 +14,16 @@
 
   - Foi utilizado o docker para os serviços `PostreSQL` e `Redis`
   - Foi utilizado o `Jest` oa invés do `Mocha` pela melhor compatibilidade com o `TypeScript` e `TypeScript Paths`
+  - Foi adicionado um sitema de usuários e apenas usuários logados tem acesso aos dados
+  - Apenas usuários com perissão de admin podem acessar as rotas de `POST`, `PUT` e `DELETE`
+
+```
+user@example.com
+teste123
+
+admin@example.com
+teste123
+```
 
 ## Qualidade
   - O projeto foi feito utilizando os principios do `SOLID` e está todo independende e modularizado
@@ -30,6 +40,7 @@
  - Docker Compose (https://docs.docker.com/compose/) `opcional`
  - PostegreSQL (https://www.postgresql.org/)
  - Redis (https://redis.io/)
+
 ## Instalação
 
 ### Clonando o Repositório
