@@ -17,6 +17,7 @@
         "alias": {
           "@modules": "./src/modules",
           "@config": "./src/config",
+          "@docs": "./src/docs",
           "@shared": "./src/shared",
           "@utils": "./src/utils"
         }

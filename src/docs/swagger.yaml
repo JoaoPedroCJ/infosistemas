@@ -1,0 +1,520 @@
+openapi: 3.0.3
+info:
+  title: Info Sistemas
+  description: Processo Seletivo Info Sistemas - Backend
+  contact:
+    name: João Pedro
+    email: joaopedrocj@gmail.com
+  version: 1.0.0
+servers:
+  - url: http://localhost:3333
+    description: Development server
+paths:
+  /users:
+    post:
+      tags:
+        - Users
+      summary: Create User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: User Name
+                email:
+                  type: string
+                  example: user@example.com
+                password:
+                  type: string
+                  example: teste123
+              required:
+                - name
+                - email
+                - password
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 400
+                  error:
+                    type: string
+                    example: Bad Request
+                  message:
+                    type: string
+                    example: Incorrect email/password combination.
+                  validation:
+                    type: object
+                    properties:
+                      body:
+                        type: object
+                        properties:
+                          source:
+                            type: string
+                            example: body
+                          keys:
+                            type: array
+                            example:
+                              - password
+                          message:
+                            type: string
+                            example: password is required
+  /sessions:
+    post:
+      tags:
+        - Users
+      summary: Authenticate users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+                password:
+                  type: string
+                  example: teste123
+              required:
+                - email
+                - password
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: "#/components/schemas/User"
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MzI1NzQ0NjAsImV4cCI6MTYzMjY2MDg2MCwic3ViIjoiOGJjYjVkZDItNDI5OS00OGIzLTkzZmEtZjJmZTU3NzNlNGMzIn0.lTNExHmxbkGTuS-nopL5BQPrH5BdpKwPB11IzRA5WSs
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Incorrect email/password combination.
+  /me:
+    get:
+      tags:
+        - Users
+      summary: Get authenticated user data
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      status:
+                        type: string
+                        example: error
+                      message:
+                        type: string
+                        example: JWT token is missing.
+                  - type: object
+                    properties:
+                      status:
+                        type: string
+                        example: error
+                      message:
+                        type: string
+                        example: Invalid JWT token.
+  /cars:
+    get:
+      tags:
+        - Cars
+      summary: Get a list of cars
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: marca
+          in: query
+          schema:
+            type: string
+            example: ferrari
+        - name: modelo
+          in: query
+          schema:
+            type: string
+            example: speciale
+        - name: ano
+          in: query
+          schema:
+            type: string
+            example: "13"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Car"
+        "401":
+          $ref: "#/components/responses/401"
+    post:
+      tags:
+        - Cars
+      summary: Insert a car in database
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                marca:
+                  type: string
+                  example: JAC
+                modelo:
+                  type: string
+                  example: J3 turin Sedan 1.4 16V 4p Mec.
+                ano:
+                  type: string
+                  example: "2010"
+                renavam:
+                  type: string
+                  example: "68531115479"
+                placa:
+                  type: string
+                  example: JSJ-8405
+                chassi:
+                  type: string
+                  example: 9B9GA4IQSNCKAPXXF
+              required:
+                - email
+                - password
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Car"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Car already in database.
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+  "/cars/{id}":
+    get:
+      tags:
+        - Cars
+      summary: Find a car by placa
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 45bfdb4c-d17d-48a4-b76e-93f95af4f0a5
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Car"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Car not found.
+    put:
+      tags:
+        - Cars
+      summary: Find a car by placa
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 2e6bf126-1cc3-4f0e-97a3-aeb40e2d012a
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                placa:
+                  type: string
+                  example: KLS-4871
+              required:
+                - placa
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Car"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "404":
+          $ref: "#/components/responses/car404"
+    delete:
+      tags:
+        - Cars
+      summary: Remove a car from database
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: d62d7723-52ff-42bc-a380-852fd7efc4b1
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Successfully removed car!
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Car not found.
+  "/cars/placa/{placa}":
+    get:
+      tags:
+        - Cars
+      summary: Find a car by placa
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: placa
+          in: path
+          required: true
+          schema:
+            type: string
+            example: HKZ8432
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Car"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/car404"
+  "/cars/chassi/{chassi}":
+    get:
+      tags:
+        - Cars
+      summary: Find a car by chassi
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: chassi
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 9B9X8M5RBZ2KR5LCX
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Car"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/car404"
+  "/cars/renavam/{renavam}":
+    get:
+      tags:
+        - Cars
+      summary: Find a car by renavam
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: renavam
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "74409462237"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Car"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/car404"
+components:
+  responses:
+    "401":
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: error
+              message:
+                type: string
+                example: JWT token is missing.
+    "403":
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: error
+              message:
+                type: string
+                example: User doesn't have enough rights.
+    car404:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: error
+              message:
+                type: string
+                example: Car not found.
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 8bcb5dd2-4299-48b3-93fa-f2fe5773e4c3
+        name:
+          type: string
+          example: User Name
+        email:
+          type: string
+          example: user@example.com
+    Car:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 5a07dc03-230c-457d-a9f6-4ba6d764765d
+        marca:
+          type: string
+          example: JAC
+        modelo:
+          type: string
+          example: J3 turin Sedan 1.4 16V 4p Mec.
+        ano:
+          type: string
+          example: "2010"
+        renavam:
+          type: string
+          example: "68531115479"
+        placa:
+          type: string
+          example: JSJ-8405
+        chassi:
+          type: string
+          example: 9B9GA4IQSNCKAPXXF
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

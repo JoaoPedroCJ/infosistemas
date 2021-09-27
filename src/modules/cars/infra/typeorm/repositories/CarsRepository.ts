@@ -1,7 +1,9 @@
-import { getRepository, Repository } from 'typeorm';
+import { getRepository, Repository, ILike } from 'typeorm';
 
 import ICreateCarsDTO from '@modules/cars/dtos/ICreateCarsDTO';
-import ICarsRepository from '@modules/cars/repositories/ICarsRepository';
+import ICarsRepository, {
+  ICarsFilter,
+} from '@modules/cars/repositories/ICarsRepository';
 
 import Car from '../entities/Car';
 
@@ -24,8 +26,22 @@ class FakeCarsRepository implements ICarsRepository {
     return this.ormRepository.save(car);
   }
 
-  public async remove(car: Car): Promise<void> {
-    this.ormRepository.delete(car);
+  public async remove(id: string): Promise<void> {
+    this.ormRepository.delete(id);
+  }
+
+  public async list(filter: ICarsFilter): Promise<Car[]> {
+    const { ano, marca, modelo } = filter;
+
+    const cars = await this.ormRepository.find({
+      where: {
+        ...(modelo && { modelo: ILike(`%${modelo}%`) }),
+        ...(marca && { marca: ILike(`%${marca}%`) }),
+        ...(ano && { ano: ILike(`%${ano}`) }),
+      },
+    });
+
+    return cars;
   }
 
   public async findById(id: string): Promise<Car | undefined> {
@@ -50,30 +66,6 @@ class FakeCarsRepository implements ICarsRepository {
     const findCar = await this.ormRepository.findOne({ where: { renavam } });
 
     return findCar;
-  }
-
-  public async findByModelo(modelo: string): Promise<Car[]> {
-    const cars = await this.ormRepository.find({
-      where: { modelo: `%${modelo}%` },
-    });
-
-    return cars;
-  }
-
-  public async findByMarca(marca: string): Promise<Car[]> {
-    const cars = await this.ormRepository.find({
-      where: { marca: `%${marca}%` },
-    });
-
-    return cars;
-  }
-
-  public async findByAno(ano: string): Promise<Car[]> {
-    const cars = await this.ormRepository.find({
-      where: { ano },
-    });
-
-    return cars;
   }
 }
 

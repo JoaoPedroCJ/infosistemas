@@ -11,6 +11,7 @@
     "paths": {
       "@modules/*": ["./modules/*"],
       "@config/*": ["./config/*"],
+      "@docs/*": ["./docs/*"],
       "@shared/*": ["./shared/*"],
       "@utils/*": ["./utils/*"]
     },
