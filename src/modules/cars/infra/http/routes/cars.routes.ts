@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { celebrate, Segments, Joi } from 'celebrate';
 
 import ensureAuthenticated from '@modules/users/infra/http/middlewares/ensureAuthenticated';
 import isAdmin from '@modules/users/infra/http/middlewares/isAdmin';
@@ -16,10 +17,33 @@ carsRouter.get('/chassi/:chassi', carsController.findChassi);
 carsRouter.get('/renavam/:renavam', carsController.findRenavam);
 carsRouter.get('/:id', carsController.show);
 
-carsRouter.post('/', isAdmin, carsController.create);
+carsRouter.post(
+  '/',
+  isAdmin,
+  celebrate({
+    [Segments.BODY]: {
+      ano: Joi.string().required(),
+      chassi: Joi.string().required(),
+      marca: Joi.string().required(),
+      modelo: Joi.string().required(),
+      placa: Joi.string().required(),
+      renavam: Joi.string().required(),
+    },
+  }),
+  carsController.create,
+);
 
 carsRouter.put('/:id', isAdmin, carsController.update);
 
-carsRouter.delete('/:id', isAdmin, carsController.remove);
+carsRouter.delete(
+  '/:id',
+  isAdmin,
+  celebrate({
+    [Segments.BODY]: {
+      placa: Joi.string().required(),
+    },
+  }),
+  carsController.remove,
+);
 
 export default carsRouter;
