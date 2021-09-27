@@ -27,7 +27,7 @@ teste123
 
 ## Qualidade
   - O projeto foi feito utilizando os principios do `SOLID` e está todo independende e modularizado
-  - Foi utilizado o ESLint e o Prettier para manter um  bom padrão de formatação do código
+  - Foi utilizado o `ESLint` e o `Prettier` para manter um  bom padrão de formatação do código
 
 | Statements | Branches | Functions | Lines |
 |:-:|:-:|:-:|:-:|
@@ -48,7 +48,12 @@ teste123
 ```
 git clone https://github.com/JoaoPedroCJ/infosistemas.git
 cd infosistemas
+
 npm install
+
+ou
+
+yarn
 ```
 
 ### Iniciando os bancos de dados
@@ -59,7 +64,7 @@ Caso opte pelo docker
 docker-compose up -d --build
 ```
 
-Caso contrário será necessário instalar o PostgreSQL e Redis manualmente
+Caso contrário será necessário instalar o `PostgreSQL` e `Redis` manualmente
 
 Configure os aquivos `.env` e `ormconfig.json`
 
@@ -96,6 +101,11 @@ ou
 yarn build
 yarn start
 ```
+
+## Observações
+
+- PostegreSQL para persistência dos dados
+- Redis para realizar cache e acelerar as buscas de acordo com buscas anteriores
 
 ## Documentação
 
