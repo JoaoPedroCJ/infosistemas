@@ -1,6 +1,7 @@
 import { inject, injectable } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
+import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
 import ICarsRepository from '../repositories/ICarsRepository';
 
 import Car from '../infra/typeorm/entities/Car';
@@ -15,6 +16,9 @@ class UpdateCarService {
   constructor(
     @inject('CarsRepository')
     private carsRepository: ICarsRepository,
+
+    @inject('CacheProvider')
+    private cacheProvider: ICacheProvider,
   ) {}
 
   public async execute({ id, placa }: IRequest): Promise<Car> {
@@ -32,6 +36,8 @@ class UpdateCarService {
     car.placa = sanitizedPlaca;
 
     await this.carsRepository.save(car);
+
+    await this.cacheProvider.invalidatePrefix('cars-list');
 
     return car;
   }

@@ -1,10 +1,12 @@
 import AppError from '@shared/errors/AppError';
 
+import FakeCacheProvider from '@shared/container/providers/CacheProvider/fakes/FakeCacheProvider';
 import FakeCarsRepository from '../repositories/fakes/FakeCarsRepository';
 import Car from '../infra/typeorm/entities/Car';
 import UpdateCarService from './UpdateCarService';
 
 let fakeCarsRepository: FakeCarsRepository;
+let fakeCacheProvider: FakeCacheProvider;
 let updateCar: UpdateCarService;
 
 let defaultCar: Car;
@@ -12,8 +14,9 @@ let defaultCar: Car;
 describe('UpdateCar', () => {
   beforeEach(() => {
     fakeCarsRepository = new FakeCarsRepository();
+    fakeCacheProvider = new FakeCacheProvider();
 
-    updateCar = new UpdateCarService(fakeCarsRepository);
+    updateCar = new UpdateCarService(fakeCarsRepository, fakeCacheProvider);
   });
 
   beforeEach(async () => {
