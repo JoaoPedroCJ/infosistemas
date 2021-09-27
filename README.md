@@ -91,4 +91,4 @@ yarn start
 Uma vez iniciado o servidor em ambiente de desenvolvimento (`NODE_ENV = development`);
 a documentação estará disponivel no link (http://localhost:3333/api-docs)
 
-também estão disponiveis o aquivo da documentação em [JSON]() e [YAML]()
+também estão disponiveis o aquivo da documentação em [JSON](https://github.com/JoaoPedroCJ/infosistemas/blob/main/src/docs/swagger.json) e [YAML](https://github.com/JoaoPedroCJ/infosistemas/blob/main/src/docs/swagger.yaml)
